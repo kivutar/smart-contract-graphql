@@ -1,0 +1,40 @@
+# Smart Contract GraphQL
+
+This is a stateless smart contract event watcher over GraphQL. You can use it to monitor events from an already deployed smart contract using a GraphQL client.
+
+Please note that you can perform the same tasks using web3 filters API instead of this project.
+
+## Installation
+
+    go get github.com/kivutar/smart-contract-graphql
+
+## Running
+
+    go build && PORT=3000 RPC_ENDPOINT="wss://rinkeby.infura.io/ws" ./smart-contract-graphql
+
+## Example query
+
+```
+query {
+  logs (name: "Message", address: "0x5e626b58388f8b083d6d399f385c901675636b6e", abi: "[{ \"constant\": false, \"inputs\": [{ \"name\": \"_hashContent\", \"type\": \"string\" }, { \"name\": \"_hashImage\", \"type\": \"string\" }], \"name\": \"post\", \"outputs\": [], \"payable\": false, \"stateMutability\": \"nonpayable\", \"type\": \"function\" }, { \"constant\": true, \"inputs\": [{ \"name\": \"\", \"type\": \"uint256\" }], \"name\": \"hashes\", \"outputs\": [{ \"name\": \"sender\", \"type\": \"address\" }, { \"name\": \"content\", \"type\": \"string\" }, { \"name\": \"image\", \"type\": \"string\" }, { \"name\": \"timestamp\", \"type\": \"uint256\" }], \"payable\": false, \"stateMutability\": \"view\", \"type\": \"function\" }, { \"constant\": true, \"inputs\": [], \"name\": \"lastHashId\", \"outputs\": [{ \"name\": \"\", \"type\": \"uint256\" }], \"payable\": false, \"stateMutability\": \"view\", \"type\": \"function\" }, { \"constant\": false, \"inputs\": [{ \"name\": \"_hashAvatar\", \"type\": \"string\" }], \"name\": \"set_avatar\", \"outputs\": [], \"payable\": false, \"stateMutability\": \"nonpayable\", \"type\": \"function\" }, { \"constant\": true, \"inputs\": [{ \"name\": \"\", \"type\": \"address\" }], \"name\": \"avatars\", \"outputs\": [{ \"name\": \"\", \"type\": \"string\" }], \"payable\": false, \"stateMutability\": \"view\", \"type\": \"function\" }, { \"inputs\": [], \"payable\": false, \"stateMutability\": \"nonpayable\", \"type\": \"constructor\" }, { \"anonymous\": false, \"inputs\": [{ \"indexed\": true, \"name\": \"sender\", \"type\": \"address\" }, { \"indexed\": false, \"name\": \"id\", \"type\": \"uint256\" }, { \"indexed\": false, \"name\": \"cid\", \"type\": \"string\" }, { \"indexed\": false, \"name\": \"img\", \"type\": \"string\" }, { \"indexed\": false, \"name\": \"timestamp\", \"type\": \"uint256\" }], \"name\": \"Message\", \"type\": \"event\" }, { \"anonymous\": false, \"inputs\": [{ \"indexed\": true, \"name\": \"sender\", \"type\": \"address\" }, { \"indexed\": false, \"name\": \"cid\", \"type\": \"string\" }], \"name\": \"Avatar\", \"type\": \"event\" }]") {
+    Topics
+    Data
+    TxHash
+    BlockNumber
+    BlockHash
+    Index
+    TxIndex
+    Address
+    Removed
+  }
+}
+```
+
+## TODO
+
+ - GraphQL Subscriptions over WebSocket
+ - Event Data decoding: parse `ABI.Event[name]` and return custom JSON in the `Data` resolver
+ - Passing `abi` could be avoided by calling `ethclient.Client.FilterLogs` instead of `BoundContract.FilterLogs`
+ - Expose FilterOpts params to set the blockNumber range
+ - Expose query params to build complex queries
+ - Refactoring + tests

@@ -30,6 +30,8 @@ query {
 }
 ```
 
+You can try it yourself on [https://smart-contract-graphql.herokuapp.com/](https://smart-contract-graphql.herokuapp.com/). The contract needs to be deployed on Rinkeby Testnet.
+
 ## TODO
 
  - GraphQL Subscriptions over WebSocket

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	"github.com/ethereum/go-ethereum/accounts/abi"
@@ -11,12 +12,14 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
-type resolver struct {
+type rootResolver struct {
 	conn *ethclient.Client
 }
 
 type logResolver struct {
 	types.Log
+	ABI  *abi.ABI
+	Name string
 }
 
 func (lr logResolver) Address() string {
@@ -33,6 +36,19 @@ func (lr logResolver) Topics() *[]string {
 
 func (lr logResolver) Data() string {
 	return common.Bytes2Hex(lr.Log.Data)
+}
+
+func (lr logResolver) Values() (*[]string, error) {
+	values, err := lr.ABI.Events[lr.Name].Inputs.UnpackValues(lr.Log.Data)
+	if err != nil {
+		return nil, err
+	}
+
+	var out []string
+	for _, v := range values {
+		out = append(out, fmt.Sprint(v))
+	}
+	return &out, nil
 }
 
 func (lr logResolver) TxHash() string {
@@ -59,15 +75,20 @@ func (lr logResolver) Removed() bool {
 	return lr.Log.Removed
 }
 
-func (r *resolver) Logs(ctx context.Context, args struct {
+func (qr *rootResolver) Logs(ctx context.Context, args struct {
 	Name    string
 	Address string
 	ABI     string
 }) (*[]logResolver, error) {
-	contract, err := bindContract(args.ABI, common.HexToAddress(args.Address), r.conn, r.conn, r.conn)
+	// Parse ABI
+	parsed, err := abi.JSON(strings.NewReader(args.ABI))
 	if err != nil {
 		return nil, err
 	}
+
+	// Bind deployed smart contract
+	contract := bind.NewBoundContract(
+		common.HexToAddress(args.Address), parsed, qr.conn, qr.conn, qr.conn)
 
 	// Get logs from contract
 	logs, sub, err := contract.FilterLogs(
@@ -85,16 +106,8 @@ func (r *resolver) Logs(ctx context.Context, args struct {
 	}
 	var out []logResolver
 	for iter.Next() {
-		out = append(out, logResolver{iter.log})
+		out = append(out, logResolver{iter.log, &parsed, args.Name})
 	}
 
 	return &out, nil
-}
-
-func bindContract(ABI string, address common.Address, caller bind.ContractCaller, transactor bind.ContractTransactor, filterer bind.ContractFilterer) (*bind.BoundContract, error) {
-	parsed, err := abi.JSON(strings.NewReader(ABI))
-	if err != nil {
-		return nil, err
-	}
-	return bind.NewBoundContract(address, parsed, caller, transactor, filterer), nil
 }

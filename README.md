@@ -26,6 +26,7 @@ query {
     TxIndex
     Address
     Removed
+    Values
   }
 }
 ```
@@ -35,7 +36,7 @@ You can try it yourself on [https://smart-contract-graphql.herokuapp.com/](https
 ## TODO
 
  - GraphQL Subscriptions over WebSocket
- - Event Data decoding: parse `ABI.Event[name]` and return custom JSON in the `Data` resolver
+ - Event Data decoding: Values should return a map with the right argument names and types
  - Passing `abi` could be avoided by calling `ethclient.Client.FilterLogs` instead of `BoundContract.FilterLogs`
  - Expose FilterOpts params to set the blockNumber range
  - Expose query params to build complex queries

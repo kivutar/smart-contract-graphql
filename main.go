@@ -21,6 +21,7 @@ func main() {
 			Address: String!
 			Topics: [String!]
 			Data: String!
+			Values: [String!]
 			TxHash: String!
 			BlockNumber: Int!
 			BlockHash: String!
@@ -37,7 +38,7 @@ func main() {
 			query: Query
 		}`
 
-	graphqlSchema := graphql.MustParseSchema(schema, &resolver{conn})
+	graphqlSchema := graphql.MustParseSchema(schema, &rootResolver{conn})
 
 	http.Handle("/query", &relay.Handler{Schema: graphqlSchema})
 

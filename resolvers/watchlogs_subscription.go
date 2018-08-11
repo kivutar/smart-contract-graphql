@@ -1,4 +1,4 @@
-package main
+package resolvers
 
 import (
 	"context"
@@ -13,10 +13,10 @@ import (
 
 type watchLogsSubscriber struct {
 	stop         <-chan struct{}
-	logResolvers chan<- logResolver
+	logResolvers chan<- LogResolver
 }
 
-func (r *resolver) broadcastWatchLogs() {
+func (r *Resolver) broadcastWatchLogs() {
 	subscribers := map[string]*watchLogsSubscriber{}
 	unsubscribe := make(chan string)
 
@@ -49,12 +49,12 @@ func (r *resolver) broadcastWatchLogs() {
 	}
 }
 
-func (r *resolver) WatchLogs(ctx context.Context, args struct {
+func (r *Resolver) WatchLogs(ctx context.Context, args struct {
 	Name    string
 	Address string
 	ABI     string
-}) (<-chan logResolver, error) {
-	logResolvers := make(chan logResolver)
+}) (<-chan LogResolver, error) {
+	logResolvers := make(chan LogResolver)
 	r.watchLogsSubscriber <- &watchLogsSubscriber{logResolvers: logResolvers, stop: ctx.Done()}
 
 	// Parse ABI
@@ -78,7 +78,7 @@ func (r *resolver) WatchLogs(ctx context.Context, args struct {
 
 	go func() {
 		for {
-			r.logResolvers <- logResolver{<-logs, &parsed, args.Name}
+			r.logResolvers <- LogResolver{<-logs, &parsed, args.Name}
 		}
 	}()
 

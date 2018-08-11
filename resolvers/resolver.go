@@ -1,18 +1,19 @@
-package main
+package resolvers
 
 import (
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
-type resolver struct {
-	logResolvers        chan logResolver
+// Resolver is the root resolver of the GraphQL endpoint
+type Resolver struct {
+	logResolvers        chan LogResolver
 	watchLogsSubscriber chan *watchLogsSubscriber
 	conn                *ethclient.Client
 }
 
-func newResolver(conn *ethclient.Client) *resolver {
-	r := &resolver{
-		logResolvers:        make(chan logResolver),
+func NewResolver(conn *ethclient.Client) *Resolver {
+	r := &Resolver{
+		logResolvers:        make(chan LogResolver),
 		watchLogsSubscriber: make(chan *watchLogsSubscriber),
 		conn:                conn,
 	}

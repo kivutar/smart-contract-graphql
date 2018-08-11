@@ -1,4 +1,4 @@
-package main
+package resolvers
 
 import (
 	"fmt"
@@ -8,17 +8,19 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 )
 
-type logResolver struct {
+// LogResolver is a resolver for the Log GraphQL type.
+// It defines methods to resolve every field of Log.
+type LogResolver struct {
 	types.Log
 	ABI  *abi.ABI
 	Name string
 }
 
-func (lr logResolver) Address() string {
+func (lr LogResolver) Address() string {
 	return lr.Log.Address.Hex()
 }
 
-func (lr logResolver) Topics() *[]string {
+func (lr LogResolver) Topics() *[]string {
 	var out []string
 	for _, t := range lr.Log.Topics {
 		out = append(out, t.Hex())
@@ -26,11 +28,12 @@ func (lr logResolver) Topics() *[]string {
 	return &out
 }
 
-func (lr logResolver) Data() string {
+func (lr LogResolver) Data() string {
 	return common.Bytes2Hex(lr.Log.Data)
 }
 
-func (lr logResolver) Values() (*[]string, error) {
+// Values represent the decoded version of Data
+func (lr LogResolver) Values() (*[]string, error) {
 	values, err := lr.ABI.Events[lr.Name].Inputs.UnpackValues(lr.Log.Data)
 	if err != nil {
 		return nil, err
@@ -43,26 +46,26 @@ func (lr logResolver) Values() (*[]string, error) {
 	return &out, nil
 }
 
-func (lr logResolver) TxHash() string {
+func (lr LogResolver) TxHash() string {
 	return lr.Log.TxHash.Hex()
 }
 
-func (lr logResolver) BlockNumber() int32 {
+func (lr LogResolver) BlockNumber() int32 {
 	return int32(lr.Log.BlockNumber)
 }
 
-func (lr logResolver) BlockHash() string {
+func (lr LogResolver) BlockHash() string {
 	return lr.Log.BlockHash.Hex()
 }
 
-func (lr logResolver) Index() int32 {
+func (lr LogResolver) Index() int32 {
 	return int32(lr.Log.Index)
 }
 
-func (lr logResolver) TxIndex() int32 {
+func (lr LogResolver) TxIndex() int32 {
 	return int32(lr.Log.TxIndex)
 }
 
-func (lr logResolver) Removed() bool {
+func (lr LogResolver) Removed() bool {
 	return lr.Log.Removed
 }

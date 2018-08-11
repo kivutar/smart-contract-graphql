@@ -9,6 +9,7 @@ import (
 	graphql "github.com/graph-gophers/graphql-go"
 	"github.com/graph-gophers/graphql-go/relay"
 	"github.com/kivutar/smart-contract-graphql/handlers"
+	"github.com/kivutar/smart-contract-graphql/resolvers"
 )
 
 func main() {
@@ -45,7 +46,7 @@ func main() {
 			query: Query
 		}`
 
-	s := graphql.MustParseSchema(schema, newResolver(conn))
+	s := graphql.MustParseSchema(schema, resolvers.NewResolver(conn))
 
 	http.Handle("/graphql", handlers.NewGraphQLWSHandler(s, &relay.Handler{Schema: s}))
 

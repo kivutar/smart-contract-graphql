@@ -1,4 +1,4 @@
-package main
+package resolvers
 
 import (
 	"context"
@@ -7,13 +7,15 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/kivutar/smart-contract-graphql/logsiterator"
 )
 
-func (r *resolver) FilterLogs(ctx context.Context, args struct {
+// FilterLogs is a GraphQL query that returns logs by their name
+func (r *Resolver) FilterLogs(ctx context.Context, args struct {
 	Name    string
 	Address string
 	ABI     string
-}) (*[]logResolver, error) {
+}) (*[]LogResolver, error) {
 	// Parse ABI
 	parsed, err := abi.JSON(strings.NewReader(args.ABI))
 	if err != nil {
@@ -34,13 +36,13 @@ func (r *resolver) FilterLogs(ctx context.Context, args struct {
 	}
 
 	// Iterate over logs to build the output
-	iter := logsIterator{
-		logs: logs,
-		sub:  sub,
+	iter := logsiterator.LogsIterator{
+		Logs: logs,
+		Sub:  sub,
 	}
-	var out []logResolver
+	var out []LogResolver
 	for iter.Next() {
-		out = append(out, logResolver{iter.log, &parsed, args.Name})
+		out = append(out, LogResolver{iter.Log, &parsed, args.Name})
 	}
 
 	return &out, nil

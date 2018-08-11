@@ -1,4 +1,4 @@
-package main
+package handlers
 
 import (
 	"net/http"
@@ -11,12 +11,12 @@ import (
 //
 // For more information, see https://github.com/graphql/graphiql.
 type GraphiQL struct {
-	port string
+	Port string
 }
 
 func (h GraphiQL) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	t := template.Must(template.New("graphiql").Parse(graphiql))
-	t.Execute(w, h.port)
+	t.Execute(w, h.Port)
 }
 
 var graphiql = string(`

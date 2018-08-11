@@ -1,4 +1,4 @@
-package graphqlwshandler
+package handlers
 
 import (
 	"context"
@@ -11,8 +11,8 @@ import (
 	"github.com/matiasanaya/graphql-transport-ws/graphqlws/event"
 )
 
-// NewHandler returns a new Handler that supports both websocket and http transports
-func NewHandler(s *graphql.Schema, httpHandler http.Handler) http.HandlerFunc {
+// NewGraphQLWSHandler returns a new Handler that supports both websocket and http transports
+func NewGraphQLWSHandler(s *graphql.Schema, httpHandler http.Handler) http.HandlerFunc {
 	wsHandler := NewDefaultHandler(s)
 	return func(w http.ResponseWriter, r *http.Request) {
 		for _, subprotocol := range websocket.Subprotocols(r) {

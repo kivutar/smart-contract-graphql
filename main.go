@@ -8,7 +8,7 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	graphql "github.com/graph-gophers/graphql-go"
 	"github.com/graph-gophers/graphql-go/relay"
-	"github.com/kivutar/smart-contract-graphql/graphqlwshandler"
+	"github.com/kivutar/smart-contract-graphql/handlers"
 )
 
 func main() {
@@ -47,9 +47,9 @@ func main() {
 
 	s := graphql.MustParseSchema(schema, newResolver(conn))
 
-	http.Handle("/graphql", graphqlwshandler.NewHandler(s, &relay.Handler{Schema: s}))
+	http.Handle("/graphql", handlers.NewGraphQLWSHandler(s, &relay.Handler{Schema: s}))
 
-	http.Handle("/", GraphiQL{port: port})
+	http.Handle("/", handlers.GraphiQL{Port: port})
 
 	log.Println("listening on", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))

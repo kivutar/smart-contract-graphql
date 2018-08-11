@@ -1,21 +1,23 @@
 package main
 
-import "github.com/ethereum/go-ethereum/ethclient"
+import (
+	"github.com/ethereum/go-ethereum/ethclient"
+)
 
 type resolver struct {
-	helloSaidEvents     chan *helloSaidEvent
-	helloSaidSubscriber chan *helloSaidSubscriber
+	logResolvers        chan logResolver
+	watchLogsSubscriber chan *watchLogsSubscriber
 	conn                *ethclient.Client
 }
 
 func newResolver(conn *ethclient.Client) *resolver {
 	r := &resolver{
-		helloSaidEvents:     make(chan *helloSaidEvent),
-		helloSaidSubscriber: make(chan *helloSaidSubscriber),
+		logResolvers:        make(chan logResolver),
+		watchLogsSubscriber: make(chan *watchLogsSubscriber),
 		conn:                conn,
 	}
 
-	go r.broadcastHelloSaid()
+	go r.broadcastWatchLogs()
 
 	return r
 }

@@ -31,26 +31,16 @@ func main() {
 			Removed: Boolean!
 		}
 
-		type HelloSaidEvent {
-			id: String!
-			msg: String!
-		}
-
 		type Query {
-				logs(name: String!, address: String!, abi: String!): [Log!]
-		}
-
-		type Mutation {
-			sayHello(msg: String!): HelloSaidEvent!
+			filterLogs(name: String!, address: String!, abi: String!): [Log!]
 		}
 
 		type Subscription {
-			helloSaid(): HelloSaidEvent!
+			watchLogs(name: String!, address: String!, abi: String!): Log!
 		}
 
 		schema {
 			subscription: Subscription
-			mutation: Mutation
 			query: Query
 		}`
 

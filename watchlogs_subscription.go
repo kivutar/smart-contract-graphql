@@ -78,10 +78,7 @@ func (r *resolver) WatchLogs(ctx context.Context, args struct {
 
 	go func() {
 		for {
-			select {
-			case log := <-logs:
-				r.logResolvers <- logResolver{log, &parsed, args.Name}
-			}
+			r.logResolvers <- logResolver{<-logs, &parsed, args.Name}
 		}
 	}()
 

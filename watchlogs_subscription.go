@@ -2,14 +2,13 @@ package main
 
 import (
 	"context"
-	"fmt"
-	"math/rand"
 	"strings"
 	"time"
 
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/rs/xid"
 )
 
 type watchLogsSubscriber struct {
@@ -27,7 +26,7 @@ func (r *resolver) broadcastWatchLogs() {
 		case id := <-unsubscribe:
 			delete(subscribers, id)
 		case s := <-r.watchLogsSubscriber:
-			subscribers[randomID()] = s
+			subscribers[xid.New().String()] = s
 		case logResolver := <-r.logResolvers:
 			for id, s := range subscribers {
 				go func(id string, s *watchLogsSubscriber) {
@@ -81,21 +80,10 @@ func (r *resolver) WatchLogs(ctx context.Context, args struct {
 		for {
 			select {
 			case log := <-logs:
-				fmt.Println(log)
 				r.logResolvers <- logResolver{log, &parsed, args.Name}
 			}
 		}
 	}()
 
 	return logResolvers, nil
-}
-
-func randomID() string {
-	var letter = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
-
-	b := make([]rune, 16)
-	for i := range b {
-		b[i] = letter[rand.Intn(len(letter))]
-	}
-	return string(b)
 }

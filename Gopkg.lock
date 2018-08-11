@@ -62,7 +62,13 @@
   revision = "2e65f85255dbc3072edf28d6b5b8efc472979f5a"
 
 [[projects]]
-  branch = "master"
+  name = "github.com/gorilla/websocket"
+  packages = ["."]
+  revision = "ea4d1f681babbce9545c9c5f3d5194a789c89f5b"
+  version = "v1.2.0"
+
+[[projects]]
+  branch = "feature/subscriptions"
   name = "github.com/graph-gophers/graphql-go"
   packages = [
     ".",
@@ -80,7 +86,17 @@
     "relay",
     "trace"
   ]
-  revision = "bb9738501bd42a6536227b96068349b814379d6e"
+  revision = "cb1a8ec3ce857d5e8b77abae4c75942d473a716b"
+  source = "github.com/matiasanaya/graphql-go"
+
+[[projects]]
+  name = "github.com/matiasanaya/graphql-transport-ws"
+  packages = [
+    "graphqlws",
+    "graphqlws/event",
+    "graphqlws/internal/connection"
+  ]
+  revision = "0c66d79b1c7623d4335c3b6e17090ebf15ce5ef3"
 
 [[projects]]
   name = "github.com/opentracing/opentracing-go"
@@ -178,6 +194,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "795242d6eb8b11e1e0d15ca03a54eafe6153c073660cba17f4b5cf6e388a788e"
+  inputs-digest = "91635360c5f832a37bff42a849d8a32e861ffb15dcfcc57e1c25b6404021925d"
   solver-name = "gps-cdcl"
   solver-version = 1

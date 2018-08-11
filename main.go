@@ -8,6 +8,7 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	graphql "github.com/graph-gophers/graphql-go"
 	"github.com/graph-gophers/graphql-go/relay"
+	"github.com/kivutar/smart-contract-graphql/graphqlwshandler"
 )
 
 func main() {
@@ -30,17 +31,32 @@ func main() {
 			Removed: Boolean!
 		}
 
+		type HelloSaidEvent {
+			id: String!
+			msg: String!
+		}
+
 		type Query {
 				logs(name: String!, address: String!, abi: String!): [Log!]
 		}
 
+		type Mutation {
+			sayHello(msg: String!): HelloSaidEvent!
+		}
+
+		type Subscription {
+			helloSaid(): HelloSaidEvent!
+		}
+
 		schema {
+			subscription: Subscription
+			mutation: Mutation
 			query: Query
 		}`
 
-	graphqlSchema := graphql.MustParseSchema(schema, &rootResolver{conn})
+	s := graphql.MustParseSchema(schema, newResolver(conn))
 
-	http.Handle("/query", &relay.Handler{Schema: graphqlSchema})
+	http.Handle("/graphql", graphqlwshandler.NewHandler(s, &relay.Handler{Schema: s}))
 
 	http.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "graphiql.html")

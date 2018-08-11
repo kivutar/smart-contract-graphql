@@ -9,12 +9,7 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/ethclient"
 )
-
-type rootResolver struct {
-	conn *ethclient.Client
-}
 
 type logResolver struct {
 	types.Log
@@ -75,7 +70,7 @@ func (lr logResolver) Removed() bool {
 	return lr.Log.Removed
 }
 
-func (qr *rootResolver) Logs(ctx context.Context, args struct {
+func (r *resolver) Logs(ctx context.Context, args struct {
 	Name    string
 	Address string
 	ABI     string
@@ -88,7 +83,7 @@ func (qr *rootResolver) Logs(ctx context.Context, args struct {
 
 	// Bind deployed smart contract
 	contract := bind.NewBoundContract(
-		common.HexToAddress(args.Address), parsed, qr.conn, qr.conn, qr.conn)
+		common.HexToAddress(args.Address), parsed, r.conn, r.conn, r.conn)
 
 	// Get logs from contract
 	logs, sub, err := contract.FilterLogs(

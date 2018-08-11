@@ -8,5 +8,6 @@
   version = "1.8.13"
 
 [[constraint]]
-  branch = "master"
   name = "github.com/graph-gophers/graphql-go"
+  source = "github.com/matiasanaya/graphql-go"
+  branch = "feature/subscriptions"

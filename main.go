@@ -12,6 +12,7 @@ import (
 )
 
 func main() {
+	port := os.Getenv("PORT")
 	conn, err := ethclient.Dial(os.Getenv("RPC_ENDPOINT"))
 	if err != nil {
 		log.Fatal(err)
@@ -48,10 +49,8 @@ func main() {
 
 	http.Handle("/graphql", graphqlwshandler.NewHandler(s, &relay.Handler{Schema: s}))
 
-	http.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "graphiql.html")
-	}))
+	http.Handle("/", GraphiQL{port: port})
 
-	log.Println("listening on", os.Getenv("PORT"))
-	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), nil))
+	log.Println("listening on", port)
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }

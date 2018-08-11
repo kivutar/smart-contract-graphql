@@ -8,9 +8,12 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	graphql "github.com/graph-gophers/graphql-go"
 	"github.com/graph-gophers/graphql-go/relay"
+	"github.com/kivutar/smart-contract-graphql/handlers"
+	"github.com/kivutar/smart-contract-graphql/resolvers"
 )
 
 func main() {
+	port := os.Getenv("PORT")
 	conn, err := ethclient.Dial(os.Getenv("RPC_ENDPOINT"))
 	if err != nil {
 		log.Fatal(err)
@@ -31,21 +34,24 @@ func main() {
 		}
 
 		type Query {
-				logs(name: String!, address: String!, abi: String!): [Log!]
+			filterLogs(name: String!, address: String!, abi: String!): [Log!]
+		}
+
+		type Subscription {
+			watchLogs(name: String!, address: String!, abi: String!): Log!
 		}
 
 		schema {
+			subscription: Subscription
 			query: Query
 		}`
 
-	graphqlSchema := graphql.MustParseSchema(schema, &rootResolver{conn})
+	s := graphql.MustParseSchema(schema, resolvers.NewResolver(conn))
 
-	http.Handle("/query", &relay.Handler{Schema: graphqlSchema})
+	http.Handle("/graphql", handlers.NewGraphQLWSHandler(s, &relay.Handler{Schema: s}))
 
-	http.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "graphiql.html")
-	}))
+	http.Handle("/", handlers.GraphiQL{Port: port})
 
-	log.Println("listening on", os.Getenv("PORT"))
-	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), nil))
+	log.Println("listening on", port)
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }

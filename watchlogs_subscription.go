@@ -77,14 +77,6 @@ func (r *resolver) WatchLogs(ctx context.Context, args struct {
 		return logResolvers, err
 	}
 
-	// for {
-	// 	select {
-	// 	case log := <-logs:
-	// 		fmt.Println(log)
-	// 		r.logs <- log
-	// 	}
-	// }
-
 	go func() {
 		for {
 			select {

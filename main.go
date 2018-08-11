@@ -50,7 +50,7 @@ func main() {
 
 	http.Handle("/graphql", handlers.NewGraphQLWSHandler(s, &relay.Handler{Schema: s}))
 
-	http.Handle("/", handlers.GraphiQL{Port: port})
+	http.HandleFunc("/", handlers.GraphiQL)
 
 	log.Println("listening on", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))

@@ -2,24 +2,17 @@ package handlers
 
 import (
 	"net/http"
-
-	"html/template"
 )
 
 // GraphiQL is an in-browser IDE for exploring GraphiQL APIs.
 // This handler returns GraphiQL when requested.
 //
 // For more information, see https://github.com/graphql/graphiql.
-type GraphiQL struct {
-	Port string
+func GraphiQL(w http.ResponseWriter, r *http.Request) {
+	w.Write(graphiql)
 }
 
-func (h GraphiQL) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	t := template.Must(template.New("graphiql").Parse(graphiql))
-	t.Execute(w, h.Port)
-}
-
-var graphiql = string(`
+var graphiql = []byte(`
 <!DOCTYPE html>
 <html>
 	<head>
@@ -49,7 +42,8 @@ var graphiql = string(`
 						}
 					});
 				}
-				var subscriptionsClient = new window.SubscriptionsTransportWs.SubscriptionClient('ws://localhost:{{ . }}/graphql', { reconnect: true });
+				var url = location.href.replace(/^http/, 'ws');
+				var subscriptionsClient = new window.SubscriptionsTransportWs.SubscriptionClient(url+'graphql', { reconnect: true });
 				var subscriptionsFetcher = window.GraphiQLSubscriptionsFetcher.graphQLFetcher(subscriptionsClient, graphQLFetcher);
 				ReactDOM.render(
 					React.createElement(GraphiQL, {fetcher: subscriptionsFetcher}),

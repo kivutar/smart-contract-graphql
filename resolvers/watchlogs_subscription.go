@@ -49,6 +49,7 @@ func (r *Resolver) broadcastWatchLogs() {
 	}
 }
 
+// WatchLogs subscribes to ethereum log events of a smart contract by event name
 func (r *Resolver) WatchLogs(ctx context.Context, args struct {
 	Name    string
 	Address string

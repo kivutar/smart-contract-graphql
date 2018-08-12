@@ -4,9 +4,11 @@ os:
   - linux
   - osx
 
-before_script:
+install:
   - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
   - dep ensure
+
+before_script:
   - GO_FILES=$(find . -iname '*.go' -type f | grep -v /vendor/)
   - go get github.com/golang/lint/golint
   - go get honnef.co/go/tools/cmd/megacheck

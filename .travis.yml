@@ -5,6 +5,7 @@ os:
   - osx
 
 install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then mkdir -p /Users/travis/gopath/bin; fi
   - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
   - dep ensure
 

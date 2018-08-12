@@ -1,4 +1,4 @@
-# Smart Contract GraphQL [![Build Status](https://travis-ci.org/kivutar/smart-contract-graphql.svg?branch=master)](https://travis-ci.org/kivutar/smart-contract-graphql)
+# Smart Contract GraphQL [![Build Status](https://travis-ci.org/kivutar/smart-contract-graphql.svg?branch=master)](https://travis-ci.org/kivutar/smart-contract-graphql) [![GoDoc](https://godoc.org/github.com/kivutar/smart-contract-graphql?status.svg)](https://godoc.org/github.com/kivutar/smart-contract-graphql)
 
 This is a stateless smart contract event watcher over GraphQL. You can use it to monitor events from an already deployed smart contract using a GraphQL client.
 

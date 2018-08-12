@@ -11,6 +11,8 @@ type Resolver struct {
 	conn                *ethclient.Client
 }
 
+// NewResolver instanciate a root resolver for the GraphQL endpoint
+// It also spawns a goroutine that will broadcast event logs to subscribers
 func NewResolver(conn *ethclient.Client) *Resolver {
 	r := &Resolver{
 		logResolvers:        make(chan LogResolver),

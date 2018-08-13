@@ -4,11 +4,15 @@ This is a stateless smart contract event watcher over GraphQL. You can use it to
 
 Please note that you can perform the same tasks using web3 filters API instead of this project.
 
-## Installation
+## Getting the source code
+
+You need [dep](https://github.com/golang/dep)
 
     go get github.com/kivutar/smart-contract-graphql
+    cd $GOPATH/src/github.com/kivutar/smart-contract-graphql
+    dep ensure
 
-## Running
+## Building and running locally
 
     go build && PORT=3000 RPC_ENDPOINT="wss://rinkeby.infura.io/ws" ./smart-contract-graphql
 
@@ -52,7 +56,7 @@ subscription {
 
 Go to http://ipfs.io/ipfs/Qma2o1KZ8z75cbSZhVhEJPHW3L4hdM1jM6PWRuoS14YJqW/ and post a message using Metamask on Rinkeby. Wait a minute, you should see your message event log in graphiql right panel.
 
-## Demo
+## Online demo
 
 You can try it yourself on [https://smart-contract-graphql.herokuapp.com/](https://smart-contract-graphql.herokuapp.com/). The contract needs to be deployed on Rinkeby Testnet.
 
